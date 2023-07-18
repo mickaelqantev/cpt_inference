@@ -64,6 +64,7 @@ def get_duplicated_icd9_proc_codes() -> set:
     Returns:
         set: The duplicated ICD9-PROC codes
     """
+    print(download_dir)
     icd9_proc_codes = pd.read_csv(
         download_dir / "D_ICD_PROCEDURES.csv.gz",
         compression="gzip",
