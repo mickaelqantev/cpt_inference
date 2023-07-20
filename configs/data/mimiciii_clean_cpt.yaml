@@ -1,0 +1,12 @@
+defaults:
+  - defaults
+dir: files/data/mimiciii_clean
+data_filename: mimiciii_clean_cpt.feather
+split_filename: mimiciii_clean_splits.feather
+code_column_names:
+  - cpt
+max_length: 4000
+
+
+
+

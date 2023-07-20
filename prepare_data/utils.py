@@ -183,7 +183,7 @@ def merge_code_dataframes(code_dfs: list[pd.DataFrame]) -> pd.DataFrame:
 
 
 def replace_nans_with_empty_lists(
-    df: pd.DataFrame, columns: list[str] = ["icd9_diag", "icd9_proc"]
+    df: pd.DataFrame, columns: list[str] = ["cpt"]
 ) -> pd.DataFrame:
     """Replaces nans in the columns with empty lists."""
     for column in columns:
