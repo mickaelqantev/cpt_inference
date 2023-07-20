@@ -1,4 +1,4 @@
-name: PLMCPT
+name: PLMICD
 configs:
-  model_path: RoBERTa-base-PM-M3-Voc-hf
+  model_path: RoBERTa-base-PM-M3-Voc/RoBERTa-base-PM-M3-Voc-hf
 
