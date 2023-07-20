@@ -29,8 +29,8 @@ from src.settings import (
 )
 
 CODE_SYSTEMS = [
-    ("ICD9-DIAG", "DIAGNOSES_ICD.csv.gz", "ICD9_CODE", "icd9_diag"),
-    ("ICD9-PROC", "PROCEDURES_ICD.csv.gz", "ICD9_CODE", "icd9_proc"),
+    ("CPT", "CPTEVENTS.csv.gz", "CPT_CD", "cpt"),
+    ,
 ]
 MIN_TARGET_COUNT = 10  # Minimum number of times a code must appear to be included
 preprocessor = TextPreprocessor(
@@ -44,19 +44,13 @@ preprocessor = TextPreprocessor(
 )
 
 random.seed(10)
-
-
 # The dataset requires a Licence in physionet. Once it is obtained, download the dataset with the following command in the terminal:
 # wget -r -N -c -np --user <your_physionet_user_name> --ask-password https://physionet.org/files/mimiciii/1.4/
 # Change the path of DOWNLOAD_DIRECTORY to the path where you downloaded mimiciii
-
 logging.basicConfig(level=logging.INFO)
-
 download_dir = Path(DOWNLOAD_DIRECTORY_MIMICIII)
 output_dir = Path(DATA_DIRECTORY_MIMICIII_CLEAN)
 output_dir.mkdir(parents=True, exist_ok=True)
-
-
 # def get_duplicated_icd9_proc_codes() -> set:
 #     """Get the duplicated ICD9-PROC codes. The codes are duplicated because they are saved as integers,
 #     removing any zeros at the beginning of the codes. These codes will not be included in the dataset.
@@ -75,8 +69,6 @@ output_dir.mkdir(parents=True, exist_ok=True)
 #             "ICD9_CODE"
 #         ]
 #     )
-
-
 def prepare_discharge_summaries(mimic_notes: pd.DataFrame) -> pd.DataFrame:
     """Format the notes dataframe into the discharge summaries dataframe
 
@@ -86,6 +78,8 @@ def prepare_discharge_summaries(mimic_notes: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Formatted discharge summaries dataframe
     """
+
+
     mimic_notes = mimic_notes.rename(
         columns={
             "HADM_ID": ID_COLUMN,
@@ -138,7 +132,7 @@ def download_and_preprocess_code_systems(code_systems: list[tuple]) -> pd.DataFr
     for name, fname, col_in, col_out in code_systems:
         logging.info(f"Loading {name} codes...")
         df = pd.read_csv(
-            download_dir / fname, compression="gzip", dtype={"ICD9_CODE": str}
+            download_dir / fname, compression="gzip", dtype={"CPT_CD": str}
         )
         df = format_code_dataframe(df, col_in, col_out)
         df = remove_duplicated_codes(df, [col_out])
@@ -146,13 +140,9 @@ def download_and_preprocess_code_systems(code_systems: list[tuple]) -> pd.DataFr
 
     merged_codes = merge_code_dataframes(code_dfs)
     merged_codes = replace_nans_with_empty_lists(merged_codes)
-    merged_codes["icd9_diag"] = merged_codes["icd9_diag"].apply(
-        lambda codes: list(map(partial(reformat_icd9, is_diag=True), codes))
-    )
-    merged_codes["icd9_proc"] = merged_codes["icd9_proc"].apply(
-        lambda codes: list(map(partial(reformat_icd9, is_diag=False), codes))
-    )
-    merged_codes[TARGET_COLUMN] = merged_codes["icd9_proc"] + merged_codes["icd9_diag"]
+    
+   
+    merged_codes[TARGET_COLUMN] = merged_codes["cpt"] 
     return merged_codes
 
 
@@ -166,10 +156,7 @@ full_dataset = discharge_summaries.merge(
     merged_codes, on=[SUBJECT_ID_COLUMN, ID_COLUMN], how="inner"
 )
 full_dataset = replace_nans_with_empty_lists(full_dataset)
-# Remove codes that appear less than 10 times
-full_dataset = filter_codes(
-    full_dataset, [TARGET_COLUMN, "icd9_proc", "icd9_diag"], min_count=MIN_TARGET_COUNT
-)
+
 # Remove admissions with no codes
 full_dataset = full_dataset[full_dataset[TARGET_COLUMN].apply(len) > 0]
 
