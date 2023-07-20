@@ -29,7 +29,7 @@ from src.settings import (
 )
 
 CODE_SYSTEMS = [
-    ("CPT", "CPTEVENTS.csv.gz", "CPT_CD", "cpt"),
+    ("CPT", "CPTEVENTS.csv.gz", "CPT_CD", "cpt")
     ,
 ]
 MIN_TARGET_COUNT = 10  # Minimum number of times a code must appear to be included
