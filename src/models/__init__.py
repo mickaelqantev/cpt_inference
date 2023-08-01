@@ -8,3 +8,5 @@ from src.models.mullenbach_models import (
 )
 from src.models.multi_res_cnn import MultiResCNN
 from src.models.plm_icd import PLMICD
+
+from src.models.plm_cpt_hierarchical_embedding import PLMCPT_HIERARCHICAL

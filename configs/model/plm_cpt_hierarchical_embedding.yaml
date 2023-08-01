@@ -1,0 +1,4 @@
+name: PLMCPT_HIERARCHICAL
+configs:
+  model_path: RoBERTa-base-PM-M3-Voc/RoBERTa-base-PM-M3-Voc-hf
+

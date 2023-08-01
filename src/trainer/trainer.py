@@ -32,6 +32,7 @@ class Trainer:
         lr_scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
         lookups: Optional[Lookups] = None,
         accumulate_grad_batches: int = 1,
+        permutation_matricices = None
     ) -> None:
         self.config = config
         self.data = data
@@ -56,6 +57,8 @@ class Trainer:
         self.current_val_results = None
         self.stop_training = False
         self.best_db = 0.5
+        self.permutation_matrices = permutation_matricices
+        
         self.on_initialisation_end()
 
     def fit(self) -> None:
@@ -374,3 +377,6 @@ class Trainer:
         self.save_checkpoint("final_model.pt")
         self.save_transforms()
         OmegaConf.save(self.config, self.experiment_path / "config.yaml")
+
+
+
